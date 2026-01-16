@@ -1,0 +1,6 @@
+<h1>Ты залогинилась. Добро пожаловать 👋</h1>
+
+<form method="post" action="{% url 'logout' %}">
+    {% csrf_token %}
+    <button type="submit">Выйти</button>
+</form>
