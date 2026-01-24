@@ -134,3 +134,5 @@ LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/"
 
 LOGOUT_REDIRECT_URL = "/login/"
+
+TMDB_API_KEY = os.getenv("TMDB_API_KEY")

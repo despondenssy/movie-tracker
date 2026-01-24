@@ -19,6 +19,8 @@ class Film(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
 
+    tmdb_id = models.PositiveIntegerField(unique=True, null=True, blank=True)
+
     start_year = models.PositiveIntegerField()
     end_year = models.PositiveIntegerField(null=True, blank=True)
 
