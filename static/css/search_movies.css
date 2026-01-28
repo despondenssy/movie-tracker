@@ -123,7 +123,7 @@
 .movie-poster-wrapper {
     position: relative;
     width: 100%;
-    padding-top: 150%; /* 2:3 aspect ratio */
+    padding-top: 150%;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     overflow: hidden;
 }
@@ -314,6 +314,14 @@
 .empty-state {
     text-align: center;
     padding: 4rem 2rem;
+    max-width: 760px;
+    margin: 0 auto;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.32);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
 .empty-state-icon {
@@ -323,12 +331,15 @@
 }
 
 .empty-state h3 {
-    color: #495057;
+    color: #212529;
     margin-bottom: 0.5rem;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
 }
 
 .empty-state p {
-    color: #6c757d;
+    color: #495057;
+    margin-bottom: 0;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 
 /* Loading State */

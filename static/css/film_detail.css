@@ -1,0 +1,104 @@
+/* ========== Film Detail Page Styles ========== */
+
+.film-hero {
+    border-radius: 18px;
+    padding: 1.5rem 1.5rem;
+    background: rgba(255, 255, 255, 0.70);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+}
+
+.film-title {
+    margin: 0;
+    line-height: 1.1;
+}
+
+.film-subtitle {
+    color: #495057;
+}
+
+.film-meta-badges .badge {
+    border-radius: 999px;
+    padding: 0.45rem 0.65rem;
+    font-weight: 600;
+}
+
+.film-poster-wrapper {
+    max-width: 220px;
+    flex-shrink: 0;
+}
+
+.film-poster {
+    width: 100%;
+    border-radius: 16px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.22);
+}
+
+.stat-pill {
+    background: rgba(111, 66, 193, 0.10);
+    border: 1px solid rgba(111, 66, 193, 0.18);
+    border-radius: 14px;
+    padding: 0.75rem 0.9rem;
+}
+
+.stat-pill .label {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.stat-pill .value {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #212529;
+}
+
+.action-card {
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+}
+
+.btn-status {
+    border-radius: 12px;
+    border: 2px solid #e9ecef;
+    background: #fff;
+    font-weight: 600;
+    padding: 0.55rem 0.75rem;
+    transition: all 0.15s ease;
+}
+
+.btn-status:hover {
+    transform: translateY(-1px);
+    border-color: rgba(111, 66, 193, 0.35);
+}
+
+.btn-status.active {
+    border-color: rgba(111, 66, 193, 0.55);
+    background: rgba(111, 66, 193, 0.10);
+}
+
+.review-card {
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.70);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.45);
+}
+
+.rec-card {
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.80);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.rec-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 18px rgba(111, 66, 193, 0.10);
+}
+

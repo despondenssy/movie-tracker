@@ -45,13 +45,14 @@
             <div class="movies-grid">
                 {% for movie in results %}
                 {% if movie.in_database %}
-                    <div class="movie-card js-movie-card" role="link" tabindex="0" data-href="{% url 'film_detail' movie.film_id %}">
+                    <div class="movie-card js-movie-card" role="link" tabindex="0" data-href="{% url 'film_detail' movie.film_id %}?q={{ query|urlencode }}">
                 {% else %}
                     <div class="movie-card js-movie-card" role="link" tabindex="0" data-submit-form="add-movie-{{ forloop.counter0 }}">
                         <form id="add-movie-{{ forloop.counter0 }}" method="post" action="{% url 'add_movie' %}" style="display:none;">
                             {% csrf_token %}
                             <input type="hidden" name="tmdb_id" value="{{ movie.id }}">
                             <input type="hidden" name="media_type" value="{{ movie.media_type }}">
+                            <input type="hidden" name="query" value="{{ query }}">
                         </form>
                 {% endif %}
                     
@@ -92,6 +93,7 @@
                             <span class="meta-item">
                                 <span class="rating-star">⭐</span>
                                 <strong>{{ movie.vote_average|floatformat:1 }}</strong>
+                                <span class="text-muted small ms-1">TMDB</span>
                             </span>
                             {% endif %}
 
