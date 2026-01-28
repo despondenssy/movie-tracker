@@ -1,15 +1,87 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Login</title>
-</head>
-<body>
-    <h1>Login</h1>
+{% extends "base.html" %}
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Log in</button>
-    </form>
-</body>
-</html>
+{% block title %}Login — Cinema Tracker{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center min-vh-100">
+    <div class="col-md-6 col-lg-4">
+
+        <div class="card shadow-lg border-0">
+            <div class="card-body p-5">
+
+                <h2 class="text-center mb-3">🎬 Cinema Tracker</h2>
+                <p class="text-center text-muted mb-4">
+                    Sign in to your account
+                </p>
+
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        Invalid username or password
+                    </div>
+                {% endif %}
+
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="id_username" class="form-label">
+                            Username
+                        </label>
+                        <input
+                            type="text"
+                            name="username"
+                            class="form-control"
+                            id="id_username"
+                            placeholder="Enter your username"
+                            required
+                        >
+                        <div class="invalid-feedback">
+                            Please enter your username
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="id_password" class="form-label">
+                            Password
+                        </label>
+                        <input
+                            type="password"
+                            name="password"
+                            class="form-control"
+                            id="id_password"
+                            placeholder="Enter your password"
+                            required
+                        >
+                        <div class="invalid-feedback">
+                            Please enter your password
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-purple w-100 mt-3">
+                        Log in
+                    </button>
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Bootstrap validation
+    (function () {
+      'use strict'
+      var forms = document.querySelectorAll('.needs-validation')
+      Array.prototype.slice.call(forms).forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+          if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+          }
+          form.classList.add('was-validated')
+        }, false)
+      })
+    })()
+</script>
+{% endblock %}

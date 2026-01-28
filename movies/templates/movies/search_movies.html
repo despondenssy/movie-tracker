@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Search Movies — Cinema Tracker{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/search_movies.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="search-container">
+    
+    <!-- Search Header -->
+    <div class="search-header">
+        <h1>🎬 Discover Movies & Series</h1>
+        <p>Search millions of titles from TMDB</p>
+    </div>
+
+    <!-- Search Form -->
+    <form method="get" action="{% url 'search_movies' %}" class="search-form">
+        <div class="input-group search-input-group">
+            <span class="search-icon">🔍</span>
+            <input 
+                type="text" 
+                name="q"
+                class="form-control"
+                placeholder="Search for movies or TV series..."
+                value="{{ query|default:'' }}"
+                autofocus
+            >
+            <button type="submit" class="btn search-btn">
+                Search
+            </button>
+        </div>
+    </form>
+
+    <!-- Results Section -->
+    {% if query %}
+        
+        {% if results %}
+            <div class="results-info">
+                <strong>{{ results|length }}</strong> result{{ results|length|pluralize }} found for "<strong>{{ query }}</strong>"
+            </div>
+
+            <div class="movies-grid">
+                {% for movie in results %}
+                {% if movie.in_database %}
+                    <div class="movie-card js-movie-card" role="link" tabindex="0" data-href="{% url 'film_detail' movie.film_id %}">
+                {% else %}
+                    <div class="movie-card js-movie-card" role="link" tabindex="0" data-submit-form="add-movie-{{ forloop.counter0 }}">
+                        <form id="add-movie-{{ forloop.counter0 }}" method="post" action="{% url 'add_movie' %}" style="display:none;">
+                            {% csrf_token %}
+                            <input type="hidden" name="tmdb_id" value="{{ movie.id }}">
+                            <input type="hidden" name="media_type" value="{{ movie.media_type }}">
+                        </form>
+                {% endif %}
+                    
+                    <!-- Poster -->
+                    <div class="movie-poster-wrapper">
+                        {% if movie.poster_path %}
+                            <img 
+                                src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" 
+                                alt="{% firstof movie.title movie.name '' %}"
+                                class="movie-poster"
+                            >
+                        {% else %}
+                            <div class="no-poster">🎬</div>
+                        {% endif %}
+
+                        <!-- Status Badge if in library -->
+                        {% if movie.user_status %}
+                            <span class="status-badge in-library">
+                                ✓ {{ movie.user_status|title }}
+                            </span>
+                        {% elif movie.in_database %}
+                            <span class="status-badge">
+                                In Library
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Movie Info -->
+                    <div class="movie-info">
+                        
+                        <h3 class="movie-title">
+                            {% firstof movie.title movie.name %}
+                        </h3>
+
+                        <div class="movie-meta">
+                            <!-- Rating -->
+                            {% if movie.vote_average %}
+                            <span class="meta-item">
+                                <span class="rating-star">⭐</span>
+                                <strong>{{ movie.vote_average|floatformat:1 }}</strong>
+                            </span>
+                            {% endif %}
+
+                            <!-- Year -->
+                            <span class="meta-item">
+                                📅 
+                                {% if movie.release_date %}
+                                    {{ movie.release_date|slice:":4" }}
+                                {% elif movie.first_air_date %}
+                                    {{ movie.first_air_date|slice:":4" }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </span>
+
+                            <!-- Type Badge -->
+                            <span class="movie-type-badge {% if movie.media_type == 'movie' %}badge-movie{% else %}badge-tv{% endif %}">
+                                {% if movie.media_type == 'movie' %}🎬 Movie{% else %}📺 Series{% endif %}
+                            </span>
+                        </div>
+
+                        <!-- Overview (short) -->
+                        {% if movie.overview %}
+                        <p class="movie-genres">
+                            {{ movie.overview|truncatewords:15 }}
+                        </p>
+                        {% endif %}
+
+                        <!-- Actions -->
+                        <div class="movie-actions">
+                            
+                            <!-- Quick Add Dropdown -->
+                            {% if user.is_authenticated %}
+                                {% if movie.user_status %}
+                                    <!-- Already added - show current status -->
+                                    <button class="btn-quick-add" disabled>
+                                        ✓ In {{ movie.user_status|title }}
+                                    </button>
+                                {% else %}
+                                    <!-- Quick Add Dropdown -->
+                                    <div class="dropdown" style="flex: 1;">
+                                        <button 
+                                            class="btn-quick-add dropdown-toggle w-100" 
+                                            type="button" 
+                                            data-bs-toggle="dropdown"
+                                        >
+                                            ➕ Quick Add
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <form method="post" action="{% url 'quick_add_movie' %}" style="margin: 0;">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="tmdb_id" value="{{ movie.id }}">
+                                                    <input type="hidden" name="media_type" value="{{ movie.media_type }}">
+                                                    <input type="hidden" name="query" value="{{ query }}">
+                                                    <input type="hidden" name="status" value="planned">
+                                                    <button type="submit" class="dropdown-item">
+                                                        📋 Planned
+                                                    </button>
+                                                </form>
+                                            </li>
+                                            <li>
+                                                <form method="post" action="{% url 'quick_add_movie' %}" style="margin: 0;">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="tmdb_id" value="{{ movie.id }}">
+                                                    <input type="hidden" name="media_type" value="{{ movie.media_type }}">
+                                                    <input type="hidden" name="query" value="{{ query }}">
+                                                    <input type="hidden" name="status" value="watching">
+                                                    <button type="submit" class="dropdown-item">
+                                                        ▶️ Watching
+                                                    </button>
+                                                </form>
+                                            </li>
+                                            <li>
+                                                <form method="post" action="{% url 'quick_add_movie' %}" style="margin: 0;">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="tmdb_id" value="{{ movie.id }}">
+                                                    <input type="hidden" name="media_type" value="{{ movie.media_type }}">
+                                                    <input type="hidden" name="query" value="{{ query }}">
+                                                    <input type="hidden" name="status" value="watched">
+                                                    <button type="submit" class="dropdown-item">
+                                                        ✅ Watched
+                                                    </button>
+                                                </form>
+                                            </li>
+                                            <li>
+                                                <form method="post" action="{% url 'quick_add_movie' %}" style="margin: 0;">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="tmdb_id" value="{{ movie.id }}">
+                                                    <input type="hidden" name="media_type" value="{{ movie.media_type }}">
+                                                    <input type="hidden" name="query" value="{{ query }}">
+                                                    <input type="hidden" name="status" value="dropped">
+                                                    <button type="submit" class="dropdown-item">
+                                                        ❌ Dropped
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                {% endif %}
+                            {% else %}
+                                <a href="{% url 'login' %}" class="btn-quick-add text-center text-decoration-none">
+                                    🔒 Login to Add
+                                </a>
+                            {% endif %}
+
+                        </div>
+                    </div>
+
+                </div>
+                {% endfor %}
+            </div>
+
+        {% else %}
+            <!-- Empty State -->
+            <div class="empty-state">
+                <div class="empty-state-icon">🔍</div>
+                <h3>No results found</h3>
+                <p>Try searching with different keywords</p>
+            </div>
+        {% endif %}
+
+    {% else %}
+        <!-- Initial State -->
+        <div class="empty-state">
+            <div class="empty-state-icon">🎬</div>
+            <h3>Start exploring</h3>
+            <p>Search for your favorite movies and TV series</p>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Card click navigation / submit (without interfering with buttons/links)
+    function isInteractive(el) {
+        return !!(el && el.closest('a, button, input, select, textarea, .dropdown, .dropdown-menu, form'));
+    }
+
+    document.querySelectorAll('.js-movie-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+            if (isInteractive(e.target)) return;
+
+            const href = card.dataset.href;
+            if (href) {
+                window.location.href = href;
+                return;
+            }
+
+            const formId = card.dataset.submitForm;
+            if (formId) {
+                const form = document.getElementById(formId);
+                if (form) form.submit();
+            }
+        });
+
+        card.addEventListener('keydown', (e) => {
+            if (e.key !== 'Enter' && e.key !== ' ') return;
+            if (isInteractive(e.target)) return;
+            e.preventDefault();
+            card.click();
+        });
+    });
+</script>
+{% endblock %}

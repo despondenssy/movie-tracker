@@ -19,8 +19,13 @@ def tmdb_search_movie(query):
         "query": query,
         "include_adult": False,
     }
-    resp = requests.get(url, params=params)
-    resp.raise_for_status()
+
+    try:
+        resp = requests.get(url, params=params, timeout=5)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        return []
+
     data = resp.json()
     return data.get("results", [])
 

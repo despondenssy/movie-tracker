@@ -1,0 +1,90 @@
+body {
+    font-family: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    color: #212529;
+    line-height: 1.6;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+    
+    background-image:
+        linear-gradient(to bottom, 
+            rgba(248, 249, 250, 0.98) 0%,
+            rgba(248, 249, 250, 0.92) 30%,
+            rgba(248, 249, 250, 0.85) 60%,
+            rgba(248, 249, 250, 0.75) 100%
+        ),
+        url('../images/clapperboard-small.svg'),
+        url('../images/clapperboard-mirror-small.svg');
+    
+    background-size: 
+        100% 100%,
+        100px 100px,         /* Размер ячейки остаётся 100x100 */
+        100px 100px;
+    
+    background-repeat: 
+        no-repeat,
+        repeat,
+        repeat;
+    
+    background-position: 
+        0 0,
+        0 0,
+        50px 50px;
+}
+
+/* ========== Headings ========== */
+h1, h2, h3, h4, h5 {
+    font-weight: 600;
+}
+
+/* ========== Links ========== */
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* ========== Buttons ========== */
+.btn {
+    border-radius: 12px;
+    font-weight: 500;
+    background-color: #6f42c1 !important;
+    color: #fff !important;
+    border: none !important;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #5930a2 !important;
+}
+
+/* ========== Cards ========== */
+.card {
+    border-radius: 16px;
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+}
+
+/* ========== Inputs ========== */
+.form-control {
+    border-radius: 10px;
+    padding: 0.6rem 0.75rem;
+}
+
+/* ========== Navbar ========== */
+.navbar {
+    background-color: rgba(33, 37, 41, 0.95) !important;
+    backdrop-filter: blur(10px);
+}
+
+.navbar-brand {
+    font-weight: 600;
+    letter-spacing: 0.2px;
+}
+
+:root {
+    --bs-primary: #6f42c1;
+    --bs-primary-rgb: 111, 66, 193;
+}

@@ -1,6 +1,7 @@
-<h1>Ты залогинилась. Добро пожаловать 👋</h1>
+{% extends "base.html" %}
 
-<form method="post" action="{% url 'logout' %}">
-    {% csrf_token %}
-    <button type="submit">Выйти</button>
-</form>
+{% block title %}Login — Cinema Tracker{% endblock %}
+
+{% block content %}
+<p>Welcome to Cinema Tracker!</p>
+{% endblock %}

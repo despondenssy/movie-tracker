@@ -1,0 +1,344 @@
+/* ========== Search Page Styles ========== */
+
+.search-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.search-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.search-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #212529;
+    margin-bottom: 0.5rem;
+}
+
+.search-header p {
+    color: #6c757d;
+    font-size: 1.1rem;
+}
+
+/* Search Form */
+.search-form {
+    max-width: 600px;
+    margin: 0 auto 3rem;
+}
+
+.search-input-group {
+    position: relative;
+}
+
+.search-input-group input {
+    padding-left: 3rem;
+    height: 56px;
+    font-size: 1.1rem;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.search-input-group input:focus {
+    border-color: #6f42c1;
+    box-shadow: 0 0 0 0.2rem rgba(111, 66, 193, 0.15);
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    font-size: 1.3rem;
+    z-index: 10;
+}
+
+.search-btn {
+    height: 56px;
+    padding: 0 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+/* Results Grid */
+.results-info {
+    margin-bottom: 2rem;
+    color: #6c757d;
+}
+
+.movies-grid {
+    display: grid;
+    /* 4 cards per row on desktop */
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+/* Responsive grid */
+@media (max-width: 1200px) {
+    .movies-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 992px) {
+    .movies-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 576px) {
+    .movies-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+}
+
+/* Movie Card */
+.movie-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.movie-card:focus-visible {
+    outline: 3px solid rgba(111, 66, 193, 0.35);
+    outline-offset: 3px;
+}
+
+.movie-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(111, 66, 193, 0.15);
+}
+
+.movie-poster-wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 150%; /* 2:3 aspect ratio */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    overflow: hidden;
+}
+
+.movie-poster {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.movie-card:hover .movie-poster {
+    transform: scale(1.05);
+}
+
+.no-poster {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 4rem;
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.status-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.95);
+    color: #6f42c1;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.status-badge.in-library {
+    background: rgba(40, 167, 69, 0.95);
+    color: white;
+}
+
+/* Movie Info */
+.movie-info {
+    padding: 1.25rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.movie-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #212529;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.movie-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+    color: #6c757d;
+    flex-wrap: wrap;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.rating-star {
+    color: #ffc107;
+}
+
+.movie-type-badge {
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.badge-movie {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.badge-tv {
+    background: #f3e5f5;
+    color: #7b1fa2;
+}
+
+.movie-genres {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-bottom: 1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    flex: 1;
+}
+
+/* Movie Actions */
+.movie-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: auto;
+}
+
+.btn-quick-add,
+.btn-view-details {
+    flex: 1;
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-quick-add {
+    background: #6f42c1;
+    color: white;
+    position: relative;
+}
+
+.btn-quick-add:hover {
+    background: #5930a2;
+    transform: translateY(-2px);
+}
+
+.btn-view-details {
+    background: #f8f9fa;
+    color: #495057;
+    border: 2px solid #e9ecef;
+}
+
+.btn-view-details:hover {
+    background: #e9ecef;
+    border-color: #dee2e6;
+}
+
+/* Dropdown for Quick Add */
+.dropdown-toggle::after {
+    margin-left: 0.5rem;
+}
+
+.dropdown-menu {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 0.5rem;
+    min-width: 180px;
+}
+
+.dropdown-item {
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dropdown-item:hover {
+    background: #f8f9fa;
+    color: #6f42c1;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.empty-state-icon {
+    font-size: 5rem;
+    color: #dee2e6;
+    margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    color: #6c757d;
+}
+
+/* Loading State */
+.loading-spinner {
+    text-align: center;
+    padding: 3rem;
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+    color: #6f42c1;
+}
