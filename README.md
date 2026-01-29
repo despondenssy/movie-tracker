@@ -53,20 +53,20 @@ git clone https://github.com/despondenssy/movie-tracker.git
 cd movie-tracker
 ```
 
-1. **Создайте виртуальное окружение:**
+2. **Создайте виртуальное окружение:**
 
 ```bash
 python -m venv venv
 source venv/bin/activate  # Для Windows: venv\Scripts\activate
 ```
 
-1. **Установите зависимости:**
+3. **Установите зависимости:**
 
 ```bash
 pip install -r requirements.txt
 ```
 
-1. **Настройте переменные окружения:**
+4. **Настройте переменные окружения:**
 
 Создайте файл `.env` в корне проекта:
 
@@ -85,19 +85,19 @@ DATABASE_URL=postgresql://user:password@localhost:5432/cinema_tracker_db
   ```
 - `TMDB_API_KEY`: получите на [https://www.themoviedb.org/settings/api](https://www.themoviedb.org/settings/api)
 
-1. **Создайте базу данных:**
+5. **Создайте базу данных:**
 
 ```bash
 createdb cinema_tracker_db
 ```
 
-1. **Примените миграции:**
+6. **Примените миграции:**
 
 ```bash
 python manage.py migrate
 ```
 
-1. **Запустите сервер:**
+7. **Запустите сервер:**
 
 ```bash
 python manage.py runserver
