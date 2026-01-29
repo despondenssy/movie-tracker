@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+{% load static %}
+{% load user_filters %}
+
+{% block title %}{{ status_display }} — Cinema Tracker{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/film_detail.css' %}">
+<style>
+.watchlist-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.watchlist-header {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(10px);
+    border-radius: 18px;
+    padding: 1.5rem 2rem;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.status-tabs {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.status-tab {
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.status-tab:hover {
+    background: rgba(111, 66, 193, 0.10);
+}
+
+.status-tab.active {
+    background: rgba(111, 66, 193, 0.15);
+    border-color: rgba(111, 66, 193, 0.30);
+}
+
+.films-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.film-card {
+    background: rgba(255, 255, 255, 0.80);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.film-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(111, 66, 193, 0.15);
+}
+
+.film-info-section {
+    padding: 1rem;
+}
+
+.film-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.film-meta {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 0.75rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: rgba(255, 255, 255, 0.32);
+    backdrop-filter: blur(4px);
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.empty-state-icon {
+    font-size: 5rem;
+    color: #dee2e6;
+    margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+    color: #212529;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    color: #495057;
+    margin-bottom: 0;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="watchlist-container">
+    
+    <!-- Header with Status Tabs -->
+    <div class="watchlist-header">
+        <h1 class="mb-0">My Lists</h1>
+        <div class="status-tabs">
+            <a href="{% url 'watchlist' 'planned' %}" class="status-tab {% if status == 'planned' %}active{% endif %}">
+                📋 Planned
+            </a>
+            <a href="{% url 'watchlist' 'watching' %}" class="status-tab {% if status == 'watching' %}active{% endif %}">
+                ▶️ Watching
+            </a>
+            <a href="{% url 'watchlist' 'watched' %}" class="status-tab {% if status == 'watched' %}active{% endif %}">
+                ✅ Watched
+            </a>
+            <a href="{% url 'watchlist' 'dropped' %}" class="status-tab {% if status == 'dropped' %}active{% endif %}">
+                ❌ Dropped
+            </a>
+        </div>
+    </div>
+
+    {% if watchlist_items %}
+        <div class="films-grid">
+            {% for item in watchlist_items %}
+                <a href="{% url 'film_detail' item.film.id %}" class="film-card">
+                    <div class="film-info-section">
+                        <h3 class="film-title">{{ item.film.title }}</h3>
+                        
+                        <div class="film-meta">
+                            <span>
+                                {{ item.film.get_type_display }}
+                            </span>
+                            {% if item.film.start_year %}
+                                <span>• {{ item.film.start_year }}</span>
+                            {% endif %}
+                            {% if item.film_id in user_reviews %}
+                                <span>• ⭐ {{ user_reviews|get_item:item.film_id|attr:"rating" }}/10</span>
+                            {% endif %}
+                        </div>
+
+                        {% if item.film.genres.all %}
+                            <div class="d-flex gap-1 flex-wrap">
+                                {% for genre in item.film.genres.all|slice:":3" %}
+                                    <span class="badge text-bg-secondary">{{ genre.name }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        {% if item.film.description %}
+                            <p class="text-muted small mt-2 mb-0" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                {{ item.film.description }}
+                            </p>
+                        {% endif %}
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">🎬</div>
+            <h3>No films here yet</h3>
+            <p>Start adding films to your {{ status_display|lower }} list!</p>
+            <a href="{% url 'search_movies' %}" class="btn mt-3">Search Movies</a>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

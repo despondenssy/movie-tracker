@@ -26,19 +26,78 @@
     <div class="container">
         <a class="navbar-brand" href="{% url 'home' %}">🎬 CinemaTracker</a>
 
-        <div class="collapse navbar-collapse">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
 
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <span class="nav-link">Hi, {{ user.username }}</span>
+                        <a class="nav-link" href="{% url 'search_movies' %}">Search</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                        <a class="nav-link" href="{% url 'recommendations' %}">Recommendations</a>
+                    </li>
+                    
+                    <!-- User Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img 
+                                src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ user.username }}" 
+                                alt="{{ user.username }}" 
+                                style="width: 32px; height: 32px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.3);"
+                            >
+                            <span>{{ user.username }}</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="{% url 'profile' %}">
+                                    👤 Profile
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <h6 class="dropdown-header">My Lists</h6>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'watchlist' 'planned' %}">
+                                    📋 Planned
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'watchlist' 'watching' %}">
+                                    ▶️ Watching
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'watchlist' 'watched' %}">
+                                    ✅ Watched
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'watchlist' 'dropped' %}">
+                                    ❌ Dropped
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form method="post" action="{% url 'logout' %}" style="margin: 0;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="dropdown-item" style="cursor: pointer;">
+                                        🚪 Logout
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
                     </li>
                 {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'login' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'signup' %}">Sign Up</a>
                     </li>
                 {% endif %}
 

@@ -6,6 +6,7 @@ from .views import (
     film_detail,
     set_film_status,
     upsert_review,
+    recommendations,
 )
 
 urlpatterns = [
@@ -15,4 +16,5 @@ urlpatterns = [
     path("films/<int:film_id>/", film_detail, name="film_detail"),
     path("films/<int:film_id>/status/", set_film_status, name="set_film_status"),
     path("films/<int:film_id>/review/", upsert_review, name="upsert_review"),
+    path("recommendations/", recommendations, name="recommendations"),
 ]

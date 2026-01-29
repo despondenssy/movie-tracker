@@ -84,6 +84,60 @@ a:hover {
     letter-spacing: 0.2px;
 }
 
+.navbar-nav {
+    align-items: center;
+}
+
+.navbar .nav-link {
+    display: flex;
+    align-items: center;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.navbar-nav > .nav-item:not(.dropdown) {
+    margin-right: 1rem;
+}
+
+.navbar .dropdown-toggle {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.navbar .dropdown-menu {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.20);
+    padding: 0.5rem;
+    min-width: 200px;
+    margin-top: 0.5rem;
+}
+
+.navbar .dropdown-item {
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    transition: all 0.15s ease;
+    font-weight: 500;
+}
+
+.navbar .dropdown-item:hover {
+    background: rgba(111, 66, 193, 0.10);
+    color: #6f42c1;
+}
+
+.navbar .dropdown-header {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+    color: #6c757d;
+}
+
+.navbar .dropdown-divider {
+    margin: 0.5rem 0;
+}
+
 :root {
     --bs-primary: #6f42c1;
     --bs-primary-rgb: 111, 66, 193;

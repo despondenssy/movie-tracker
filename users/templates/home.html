@@ -1,7 +1,355 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %}Login — Cinema Tracker{% endblock %}
+{% block title %}Home — Cinema Tracker{% endblock %}
+
+{% block extra_css %}
+<style>
+.dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.dashboard-section {
+    margin-bottom: 3rem;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.section-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.view-all-link {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #6f42c1;
+    text-decoration: none;
+}
+
+.view-all-link:hover {
+    text-decoration: underline;
+}
+
+.films-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.film-card {
+    background: rgba(255, 255, 255, 0.80);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.film-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(111, 66, 193, 0.15);
+}
+
+.film-card-body {
+    padding: 1rem;
+}
+
+.film-card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.3;
+}
+
+.film-card-meta {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+}
+
+/* Horizontal scroll container */
+.horizontal-scroll {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0.5rem 0 1.5rem 0;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+.horizontal-scroll::-webkit-scrollbar {
+    height: 8px;
+}
+
+.horizontal-scroll::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+.horizontal-scroll::-webkit-scrollbar-thumb {
+    background: rgba(111, 66, 193, 0.5);
+    border-radius: 10px;
+}
+
+.horizontal-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(111, 66, 193, 0.7);
+}
+
+/* Movie poster card */
+.movie-poster-card {
+    position: relative;
+    flex: 0 0 200px;
+    width: 200px;
+    height: 300px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.movie-poster-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.poster-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.poster-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #6f42c1 0%, #9b5de5 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+}
+
+.poster-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.7) 50%, transparent 100%);
+    padding: 1rem;
+    color: white;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.movie-poster-card:hover .poster-overlay {
+    opacity: 1;
+}
+
+.poster-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    line-height: 1.2;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.poster-meta {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 0.5rem;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    background: rgba(40, 167, 69, 0.9);
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.empty-section {
+    text-align: center;
+    padding: 3rem 2rem;
+    background: rgba(255, 255, 255, 0.32);
+    backdrop-filter: blur(4px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.empty-section .icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.empty-section p {
+    color: #6c757d;
+    margin-bottom: 1rem;
+}
+
+/* Landing page for guests */
+.landing-hero {
+    text-align: center;
+    padding: 5rem 2rem;
+    background: rgba(255, 255, 255, 0.60);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.landing-hero h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.landing-hero p {
+    font-size: 1.25rem;
+    color: #6c757d;
+    margin-bottom: 2rem;
+}
+
+.landing-hero .cta-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.landing-hero .cta-buttons .btn-primary {
+    padding: 0.75rem 2.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #6f42c1 0%, #9b5de5 100%);
+    border: none;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.landing-hero .cta-buttons .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(111, 66, 193, 0.3);
+}
+
+.landing-hero .login-link {
+    color: #6f42c1;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+.landing-hero .login-link:hover {
+    color: #9b5de5;
+    text-decoration: underline;
+}
+</style>
+{% endblock %}
 
 {% block content %}
-<p>Welcome to Cinema Tracker!</p>
+
+{% if show_landing %}
+    <!-- Landing page for guests -->
+    <div class="landing-hero">
+        <h1>🎬 Cinema Tracker</h1>
+        <p>Track your movies, rate and review, discover new favorites</p>
+        <div class="cta-buttons">
+            <a href="{% url 'signup' %}" class="btn btn-primary btn-lg">Get Started</a>
+            <a href="{% url 'login' %}" class="login-link">Already have an account? Log in</a>
+        </div>
+    </div>
+{% else %}
+    <!-- Dashboard for authenticated users -->
+    <div class="dashboard-container">
+        
+        <!-- Trending This Week -->
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2 class="section-title">🔥 Trending This Week</h2>
+            </div>
+            
+            {% if trending_films %}
+                <div class="horizontal-scroll">
+                    {% for movie in trending_films %}
+                        <div class="movie-poster-card" onclick="window.location.href='{% url 'search_movies' %}?q={% firstof movie.title movie.name '' %}'" style="cursor: pointer;">
+                            {% if movie.poster_path %}
+                                <img src="https://image.tmdb.org/t/p/w342{{ movie.poster_path }}" 
+                                     alt="{% firstof movie.title movie.name '' %}"
+                                     class="poster-image">
+                            {% else %}
+                                <div class="poster-placeholder">
+                                    <span>🎬</span>
+                                </div>
+                            {% endif %}
+                            <div class="poster-overlay">
+                                <h3 class="poster-title">{% firstof movie.title movie.name '' %}</h3>
+                                <div class="poster-meta">
+                                    {% if movie.vote_average %}⭐ {{ movie.vote_average|floatformat:1 }}{% endif %}
+                                </div>
+                                {% if movie.user_status %}
+                                    <span class="status-badge">In {{ movie.user_status|title }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Popular Movies -->
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2 class="section-title">📈 Popular Movies</h2>
+            </div>
+            
+            {% if popular_films %}
+                <div class="horizontal-scroll">
+                    {% for movie in popular_films %}
+                        <div class="movie-poster-card" onclick="window.location.href='{% url 'search_movies' %}?q={% firstof movie.title movie.name '' %}'" style="cursor: pointer;">
+                            {% if movie.poster_path %}
+                                <img src="https://image.tmdb.org/t/p/w342{{ movie.poster_path }}" 
+                                     alt="{% firstof movie.title movie.name '' %}"
+                                     class="poster-image">
+                            {% else %}
+                                <div class="poster-placeholder">
+                                    <span>🎬</span>
+                                </div>
+                            {% endif %}
+                            <div class="poster-overlay">
+                                <h3 class="poster-title">{% firstof movie.title movie.name '' %}</h3>
+                                <div class="poster-meta">
+                                    {% if movie.vote_average %}⭐ {{ movie.vote_average|floatformat:1 }}{% endif %}
+                                </div>
+                                {% if movie.user_status %}
+                                    <span class="status-badge">In {{ movie.user_status|title }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+{% endif %}
+
 {% endblock %}

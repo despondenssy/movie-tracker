@@ -6,7 +6,7 @@ from django.db.models import Avg
 from urllib.parse import urlencode
 from .tmdb_client import tmdb_search_movie, tmdb_get_movie_details
 from .services_tmdb import import_tmdb_movie
-from .services import set_watch_status, get_film_rating_stats
+from .services import set_watch_status, get_film_rating_stats, get_user_recommendations
 from .models import Film, WatchStatus, Review
 
 
@@ -222,3 +222,25 @@ def add_movie(request):
     if query:
         return redirect(f"/films/{film.id}/?{urlencode({'q': query})}")
     return redirect("film_detail", film_id=film.id)
+
+
+@login_required
+def recommendations(request):
+    """Персонализированные рекомендации на основе высокооценённых фильмов"""
+    rec_list = get_user_recommendations(user=request.user, limit=24)
+    
+    # Check which films are already in user's database
+    if rec_list:
+        rec_ids = [item.get('id') for item in rec_list]
+        user_films = {
+            ws.film.tmdb_id: ws.status 
+            for ws in WatchStatus.objects.filter(user=request.user, film__tmdb_id__in=rec_ids).select_related('film')
+        }
+        for item in rec_list:
+            item['user_status'] = user_films.get(item.get('id'))
+    
+    context = {
+        'recommendations': rec_list,
+    }
+    
+    return render(request, 'movies/recommendations.html', context)

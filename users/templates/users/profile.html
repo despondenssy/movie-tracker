@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ profile_user.username }} — Cinema Tracker{% endblock %}
+
+{% block extra_css %}
+<style>
+.profile-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.profile-header {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(10px);
+    border-radius: 18px;
+    padding: 2rem;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+    margin-bottom: 2rem;
+}
+
+.avatar-section {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 4px solid rgba(111, 66, 193, 0.20);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.user-info h1 {
+    margin: 0;
+    font-size: 2rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 24px rgba(111, 66, 193, 0.12);
+}
+
+.stat-card .icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-card .value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #212529;
+    margin-bottom: 0.25rem;
+}
+
+.stat-card .label {
+    color: #6c757d;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.stat-card.total {
+    background: linear-gradient(135deg, rgba(111, 66, 193, 0.15) 0%, rgba(111, 66, 193, 0.08) 100%);
+}
+
+.stat-card.rating {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.15) 0%, rgba(255, 193, 7, 0.08) 100%);
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    
+    <!-- Profile Header -->
+    <div class="profile-header">
+        <div class="avatar-section">
+            <img 
+                src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ profile_user.username }}" 
+                alt="{{ profile_user.username }}" 
+                class="avatar"
+            >
+            <div class="user-info">
+                <h1>{{ profile_user.username }}</h1>
+                <p class="text-muted mb-0">
+                    {% if profile_user.email %}{{ profile_user.email }}{% endif %}
+                </p>
+                {% if is_own_profile %}
+                    <a href="#" class="btn btn-sm btn-outline-secondary mt-2">Edit Profile</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <h2 class="mb-3">Statistics</h2>
+    <div class="stats-grid">
+        
+        <a href="{% url 'watchlist' 'planned' %}" class="stat-card">
+            <div class="icon">📋</div>
+            <div class="value">{{ planned_count }}</div>
+            <div class="label">Planned</div>
+        </a>
+
+        <a href="{% url 'watchlist' 'watching' %}" class="stat-card">
+            <div class="icon">▶️</div>
+            <div class="value">{{ watching_count }}</div>
+            <div class="label">Watching</div>
+        </a>
+
+        <a href="{% url 'watchlist' 'watched' %}" class="stat-card">
+            <div class="icon">✅</div>
+            <div class="value">{{ watched_count }}</div>
+            <div class="label">Watched</div>
+        </a>
+
+        <a href="{% url 'watchlist' 'dropped' %}" class="stat-card">
+            <div class="icon">❌</div>
+            <div class="value">{{ dropped_count }}</div>
+            <div class="label">Dropped</div>
+        </a>
+
+        <div class="stat-card total">
+            <div class="icon">🎬</div>
+            <div class="value">{{ total_count }}</div>
+            <div class="label">Total Films</div>
+        </div>
+
+        <div class="stat-card rating">
+            <div class="icon">⭐</div>
+            <div class="value">
+                {% if avg_rating %}
+                    {{ avg_rating|floatformat:1 }}
+                {% else %}
+                    —
+                {% endif %}
+            </div>
+            <div class="label">Average Rating</div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

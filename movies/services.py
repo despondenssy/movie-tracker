@@ -1,5 +1,6 @@
 from django.db.models import Avg, Count
-from .models import WatchStatus, Review
+from .models import WatchStatus, Review, Film
+from .tmdb_client import tmdb_get_similar
 
 
 def set_watch_status(*, user, film, status):
@@ -81,3 +82,58 @@ def get_film_rating_stats(*, film):
     )
 
     return stats["avg_rating"], stats["rating_count"]
+
+
+def get_user_recommendations(*, user, limit=20):
+    """
+    Generate personalized recommendations based on user's highly-rated films.
+    
+    Algorithm:
+    1. Find films user rated 8-10
+    2. Get similar films from TMDB for each
+    3. Filter out already watched/in watchlist
+    4. Remove duplicates, sort by TMDB rating
+    
+    Returns: List of dicts with TMDB movie data
+    """
+    # Get highly-rated films (rating >= 8)
+    highly_rated = Review.objects.filter(
+        user=user,
+        rating__gte=8
+    ).select_related('film').order_by('-rating')[:10]  # Top 10 to avoid too many API calls
+    
+    if not highly_rated:
+        # Fallback: return empty list or popular movies
+        return []
+    
+    # Get user's existing films (to filter out)
+    user_film_ids = set(
+        WatchStatus.objects.filter(user=user).values_list('film__tmdb_id', flat=True)
+    )
+    
+    # Collect similar films
+    recommendations = {}  # Use dict to avoid duplicates: {tmdb_id: movie_data}
+    
+    for review in highly_rated:
+        film = review.film
+        if not film.tmdb_id:
+            continue
+        
+        # Get similar films from TMDB
+        similar = tmdb_get_similar(film.tmdb_id, media_type=film.type)
+        
+        for movie in similar:
+            tmdb_id = movie.get('id')
+            
+            # Skip if already in user's watchlist or already in recommendations
+            if tmdb_id in user_film_ids or tmdb_id in recommendations:
+                continue
+            
+            # Add to recommendations
+            recommendations[tmdb_id] = movie
+    
+    # Convert to list and sort by TMDB rating (vote_average)
+    rec_list = list(recommendations.values())
+    rec_list.sort(key=lambda x: x.get('vote_average', 0), reverse=True)
+    
+    return rec_list[:limit]

@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Recommendations — Cinema Tracker{% endblock %}
+
+{% block content %}
+<div class="recommendations-page">
+    <div class="page-header">
+        <h1 class="page-title">✨ Recommended For You</h1>
+        <p class="page-subtitle">Based on your highly-rated films</p>
+    </div>
+
+    {% if recommendations %}
+        <div class="recommendations-grid">
+            {% for movie in recommendations %}
+                <div class="movie-poster-card" onclick="window.location.href='{% url 'search_movies' %}?q={% firstof movie.title movie.name '' %}'" style="cursor: pointer;">
+                    {% if movie.poster_path %}
+                        <img src="https://image.tmdb.org/t/p/w342{{ movie.poster_path }}" 
+                             alt="{% firstof movie.title movie.name '' %}"
+                             class="poster-image">
+                    {% else %}
+                        <div class="poster-placeholder">
+                            <span>🎬</span>
+                        </div>
+                    {% endif %}
+                    <div class="poster-overlay">
+                        <h3 class="poster-title">{% firstof movie.title movie.name '' %}</h3>
+                        <div class="poster-meta">
+                            {% if movie.vote_average %}⭐ {{ movie.vote_average|floatformat:1 }}{% endif %}
+                            {% if movie.release_date %}
+                                • {{ movie.release_date|slice:":4" }}
+                            {% elif movie.first_air_date %}
+                                • {{ movie.first_air_date|slice:":4" }}
+                            {% endif %}
+                        </div>
+                        {% if movie.user_status %}
+                            <span class="status-badge">In {{ movie.user_status|title }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">💫</div>
+            <h3>No recommendations yet</h3>
+            <p class="text-muted">Rate some films with 8-10 to get personalized recommendations!</p>
+            <a href="{% url 'search_movies' %}" class="btn btn-primary">Search Films</a>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.recommendations-page {
+    padding: 2rem 1rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.page-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #212529;
+    margin-bottom: 0.5rem;
+}
+
+.page-subtitle {
+    font-size: 1.1rem;
+    color: #6c757d;
+    margin: 0;
+}
+
+.recommendations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Movie poster card */
+.movie-poster-card {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 2/3;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.movie-poster-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.poster-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.poster-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #6f42c1 0%, #9b5de5 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+}
+
+.poster-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.7) 50%, transparent 100%);
+    padding: 1rem;
+    color: white;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.movie-poster-card:hover .poster-overlay {
+    opacity: 1;
+}
+
+.poster-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    line-height: 1.2;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.poster-meta {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 0.5rem;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    background: rgba(40, 167, 69, 0.9);
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    margin-bottom: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .recommendations-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 1rem;
+    }
+    
+    .page-title {
+        font-size: 2rem;
+    }
+}
+</style>
+{% endblock %}
