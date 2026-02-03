@@ -21,8 +21,9 @@ Cinema Tracker — это сервис для управления личной 
 **Backend:**
 
 - Python 3.12
-- Django 5.0
+- Django 6.0
 - PostgreSQL
+- Redis (кэширование)
 - TMDB API
 
 **Frontend:**
@@ -42,6 +43,7 @@ Cinema Tracker — это сервис для управления личной 
 
 - Python 3.12+
 - PostgreSQL 14+
+- Docker Desktop (для Redis)
 - Git
 
 ### Шаги установки
@@ -53,26 +55,27 @@ git clone https://github.com/despondenssy/movie-tracker.git
 cd movie-tracker
 ```
 
-1. **Создайте виртуальное окружение:**
+2. **Создайте виртуальное окружение:**
 
 ```bash
 python -m venv venv
 source venv/bin/activate  # Для Windows: venv\Scripts\activate
 ```
 
-1. **Установите зависимости:**
+3. **Установите зависимости:**
 
 ```bash
 pip install -r requirements.txt
 ```
 
-1. **Настройте переменные окружения:**
+4. **Настройте переменные окружения:**
 
 Создайте файл `.env` в корне проекта:
 
 ```env
 SECRET_KEY=your-random-secret-key-here
 DEBUG=True
+REDIS_URL=redis://localhost:6379/1
 TMDB_API_KEY=your_tmdb_api_key_here
 DATABASE_URL=postgresql://user:password@localhost:5432/cinema_tracker_db
 ```
@@ -83,29 +86,36 @@ DATABASE_URL=postgresql://user:password@localhost:5432/cinema_tracker_db
   ```bash
   python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
   ```
-- `TMDB_API_KEY`: получите на [https://www.themoviedb.org/settings/api](https://www.themoviedb.org/settings/api)
+- `TMDB_API_KEY`: получите на https://www.themoviedb.org/settings/api
+- `REDIS_URL`: используйте `redis://localhost:6379/1` (после запуска Docker контейнера)
 
-1. **Создайте базу данных:**
+5. **Запустите Redis контейнер:**
+
+```bash
+docker run -d -p 6379:6379 --name cinema-redis --restart unless-stopped redis:alpine
+```
+
+6. **Создайте базу данных:**
 
 ```bash
 createdb cinema_tracker_db
 ```
 
-1. **Примените миграции:**
+7. **Примените миграции:**
 
 ```bash
 python manage.py migrate
 ```
 
-1. **Запустите сервер:**
+8. **Запустите сервер:**
 
 ```bash
 python manage.py runserver
 ```
 
-Приложение будет доступно по адресу: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+Приложение будет доступно по адресу: http://127.0.0.1:8000/
 
-## 🎯 Алгоритм рекомендаций
+## Алгоритм рекомендаций
 
 Система рекомендаций использует **content-based filtering**: анализирует фильмы с оценкой 8-10, запрашивает похожие через TMDB API, фильтрует уже просмотренные и возвращает топ-24 рекомендации по рейтингу.
 

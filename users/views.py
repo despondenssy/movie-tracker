@@ -3,6 +3,7 @@ from django.contrib.auth import login
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.db.models import Avg, Count
+from django.core.cache import cache
 from .forms import SignUpForm
 from .models import User
 from movies.models import WatchStatus, Review, Film
@@ -19,11 +20,17 @@ def home(request):
     planned_count = WatchStatus.objects.filter(user=request.user, status=WatchStatus.Status.PLANNED).count()
     watched_count = WatchStatus.objects.filter(user=request.user, status=WatchStatus.Status.WATCHED).count()
     
-    # Get trending from TMDB
-    trending = tmdb_get_trending(media_type="all", time_window="week")[:12]
+    # Get trending from cache or TMDB (cache for 1 hour)
+    trending = cache.get('trending_week')
+    if trending is None:
+        trending = tmdb_get_trending(media_type="all", time_window="week")[:12]
+        cache.set('trending_week', trending, 60 * 60)  # 1 hour
     
-    # Get popular movies from TMDB
-    popular = tmdb_get_popular(media_type="movie")[:12]
+    # Get popular movies from cache or TMDB (cache for 6 hours)
+    popular = cache.get('popular_movies')
+    if popular is None:
+        popular = tmdb_get_popular(media_type="movie")[:12]
+        cache.set('popular_movies', popular, 60 * 60 * 6)  # 6 hours
     
     # Check which films are already in user's database
     if trending:

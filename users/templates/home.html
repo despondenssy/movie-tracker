@@ -120,11 +120,13 @@
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     transition: all 0.3s ease;
+    z-index: 1;
 }
 
 .movie-poster-card:hover {
     transform: scale(1.05);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    z-index: 10;
 }
 
 .poster-image {
@@ -290,7 +292,7 @@
             {% if trending_films %}
                 <div class="horizontal-scroll">
                     {% for movie in trending_films %}
-                        <div class="movie-poster-card" onclick="window.location.href='{% url 'search_movies' %}?q={% firstof movie.title movie.name '' %}'" style="cursor: pointer;">
+                        <div class="movie-poster-card" data-search-url="{% url 'search_movies' %}?q={% firstof movie.title movie.name '' %}" style="cursor: pointer;">
                             {% if movie.poster_path %}
                                 <img src="https://image.tmdb.org/t/p/w342{{ movie.poster_path }}" 
                                      alt="{% firstof movie.title movie.name '' %}"
@@ -324,7 +326,7 @@
             {% if popular_films %}
                 <div class="horizontal-scroll">
                     {% for movie in popular_films %}
-                        <div class="movie-poster-card" onclick="window.location.href='{% url 'search_movies' %}?q={% firstof movie.title movie.name '' %}'" style="cursor: pointer;">
+                        <div class="movie-poster-card" data-search-url="{% url 'search_movies' %}?q={% firstof movie.title movie.name '' %}" style="cursor: pointer;">
                             {% if movie.poster_path %}
                                 <img src="https://image.tmdb.org/t/p/w342{{ movie.poster_path }}" 
                                      alt="{% firstof movie.title movie.name '' %}"
@@ -352,4 +354,17 @@
     </div>
 {% endif %}
 
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Handle clicks on movie poster cards
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.movie-poster-card[data-search-url]').forEach(card => {
+        card.addEventListener('click', function() {
+            window.location.href = this.dataset.searchUrl;
+        });
+    });
+});
+</script>
 {% endblock %}
